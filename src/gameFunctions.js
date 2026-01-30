@@ -1,9 +1,9 @@
-function drawGrid(ctx , canvas , GRID_SIZE , CELL_SIZE , grid) {
+export function drawGrid(ctx , canvas , GRID_SIZE , CELL_SIZE , grid) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   for (let y = 0; y < GRID_SIZE; y++) {
     for (let x = 0; x < GRID_SIZE; x++) {
-      ctx.strokeStyle = "#ccc";
+      ctx.strokeStyle = "#1b0101fd";
       ctx.strokeRect(
         x * CELL_SIZE,
         y * CELL_SIZE,
