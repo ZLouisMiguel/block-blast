@@ -1,0 +1,11 @@
+body {
+    background-color: beige;
+}
+
+canvas {
+  margin: 10px auto;
+  display: block;
+  background: #ffffff;
+  border-radius: 5px;
+  border: #0e0101 solid 10px;
+}
