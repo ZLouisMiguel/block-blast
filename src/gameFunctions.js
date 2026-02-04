@@ -23,3 +23,28 @@ export function drawGrid(ctx , canvas , GRID_SIZE , CELL_SIZE , grid) {
     }
   }
 }
+
+export function drawBlock(ctx, block, startX, startY, cellSize) {
+  ctx.fillStyle = "#4CAF50";
+  ctx.strokeStyle = "#1b0101fd";
+
+  for (let y = 0; y < block.length; y++) {
+    for (let x = 0; x < block[y].length; x++) {
+      if (block[y][x]) {
+        ctx.fillRect(
+          startX + x * cellSize,
+          startY + y * cellSize,
+          cellSize,
+          cellSize
+        );
+
+        ctx.strokeRect(
+          startX + x * cellSize,
+          startY + y * cellSize,
+          cellSize,
+          cellSize
+        );
+      }
+    }
+  }
+}
