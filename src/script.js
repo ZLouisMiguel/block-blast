@@ -1,29 +1,45 @@
-import { drawGrid, drawBlock } from "./gameFunctions.js";
+import {
+  drawGrid,
+  drawBlock,
+  getGridPosition,
+  GRID_SIZE,
+  CELL_SIZE
+} from "./gameFunctions.js";
 import { BLOCK_SHAPES } from "./blocks.js";
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-const GRID_SIZE = 10;
-const CELL_SIZE = 60;
-
 let GAME_GRID = Array.from({ length: GRID_SIZE }, () =>
-  Array(GRID_SIZE).fill(0),
+  Array(GRID_SIZE).fill(0)
 );
-console.log(GAME_GRID);
-drawGrid(ctx, canvas, GRID_SIZE, CELL_SIZE, GAME_GRID);
 
-const testBlock = BLOCK_SHAPES[4];
-drawBlock(ctx, testBlock, 0, 0, CELL_SIZE);
+let activeBlock = BLOCK_SHAPES[7];
 
-const block = BLOCK_SHAPES[Math.floor(Math.random() * BLOCK_SHAPES.length)];
-const blockWidth  = block[0].length * CELL_SIZE;
-const blockHeight = block.length * CELL_SIZE;
+let mouse = { x: 0, y: 0 };
 
-drawBlock(
-  ctx,
-  block,
-  canvas.width  - blockWidth  - CELL_SIZE,
-  canvas.height - blockHeight - CELL_SIZE,
-  CELL_SIZE
-);
+canvas.addEventListener("mousemove", (e) => {
+  const rect = canvas.getBoundingClientRect();
+  mouse.x = e.clientX - rect.left;
+  mouse.y = e.clientY - rect.top;
+});
+
+function gameLoop() {
+  drawGrid(ctx, canvas, GAME_GRID);
+  const gridPos = getGridPosition(mouse.x, mouse.y);
+
+  if (gridPos) {
+    drawBlock(
+      ctx,
+      activeBlock,
+      gridPos.x * CELL_SIZE,
+      gridPos.y * CELL_SIZE,
+      CELL_SIZE,
+      0.5
+    );
+  }
+
+  requestAnimationFrame(gameLoop);
+}
+
+gameLoop();
