@@ -59,56 +59,25 @@ export function drawBlock(ctx, block, startX, startY, cellSize, alpha = 1) {
   ctx.restore();
 }
 
-export function getGridPosition(mouseX, mouseY, canvas) {
-  const offset = getGridOffset(canvas);
-
-  const gridX = Math.floor((mouseX - offset.x) / CELL_SIZE);
-  const gridY = Math.floor((mouseY - offset.y) / CELL_SIZE);
-
-  if (gridX < 0 || gridX >= GRID_SIZE || gridY < 0 || gridY >= GRID_SIZE) {
-    return null;
-  }
-
-  return { x: gridX, y: gridY };
-}
-
 export function drawGhostBlock(ctx, block, gridX, gridY, canvas, alpha = 0.5) {
   const offset = getGridOffset(canvas);
+  
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = "#4CAF50";
+  ctx.strokeStyle = "#1b0101fd";
 
-  drawBlock(
-    ctx,
-    block,
-    offset.x + gridX * CELL_SIZE,
-    offset.y + gridY * CELL_SIZE,
-    CELL_SIZE,
-    alpha,
-  );
-}
-
-export function canPlaceBlock(grid, block, gridX, gridY) {
   for (let y = 0; y < block.length; y++) {
     for (let x = 0; x < block[y].length; x++) {
-      if (!block[y][x]) continue;
-
-      const targetX = gridX + x;
-      const targetY = gridY + y;
-
-      // Rule 1: bounds check
-      if (
-        targetX < 0 ||
-        targetX >= grid[0].length ||
-        targetY < 0 ||
-        targetY >= grid.length
-      ) {
-        return false;
-      }
-
-      // Rule 2: collision check
-      if (grid[targetY][targetX] !== 0) {
-        return false;
+      if (block[y][x]) {
+        const px = offset.x + (gridX + x) * CELL_SIZE;
+        const py = offset.y + (gridY + y) * CELL_SIZE;
+        
+        ctx.fillRect(px, py, CELL_SIZE, CELL_SIZE);
+        ctx.strokeRect(px, py, CELL_SIZE, CELL_SIZE);
       }
     }
   }
-
-  return true;
+  
+  ctx.restore();
 }
