@@ -15,6 +15,13 @@ let GAME_GRID = Array.from({ length: GRID_SIZE }, () =>
   Array(GRID_SIZE).fill(0),
 );
 
+let score = 0;
+let combo = 0;
+let gameOver = false;
+
+const scoreElement = document.getElementById("score");
+const comboElement = document.getElementById("combo");
+
 const TRAY_Y = canvas.height - 120;
 const TRAY_BLOCK_SIZE = 30;
 const TOTAL_BLOCKS = 3;
@@ -26,6 +33,9 @@ let offsetX = 0;
 let offsetY = 0;
 
 let mouse = { x: 0, y: 0 };
+
+createTrayBlocks();
+updateDisplay();
 
 canvas.addEventListener("mousemove", (e) => {
   const rect = canvas.getBoundingClientRect();
@@ -60,8 +70,6 @@ function createTrayBlocks() {
   }
 }
 
-createTrayBlocks();
-
 function blockCollision(x, y, block) {
   const w = block.shape[0].length * TRAY_BLOCK_SIZE;
   const h = block.shape.length * TRAY_BLOCK_SIZE;
@@ -93,19 +101,6 @@ canvas.addEventListener("mousedown", (e) => {
     }
   }
 });
-
-function getGridCellAtPosition(x, y) {
-  const offset = getGridOffset(canvas);
-
-  const gridX = Math.floor((x - offset.x) / CELL_SIZE);
-  const gridY = Math.floor((y - offset.y) / CELL_SIZE);
-
-  if (gridX < 0 || gridX >= GRID_SIZE || gridY < 0 || gridY >= GRID_SIZE) {
-    return null;
-  }
-
-  return { x: gridX, y: gridY };
-}
 
 function canPlaceBlockAtPosition(shape, gridX, gridY) {
   if (
@@ -169,12 +164,89 @@ function findBestGridPlacement(block) {
   };
 }
 
+function checkAndClearLines() {
+  let linesCleared = 0;
+
+  const rowsToClear = [];
+  for (let y = 0; y < GRID_SIZE; y++) {
+    let rowComplete = true;
+    for (let x = 0; x < GRID_SIZE; x++) {
+      if (GAME_GRID[y][x] === 0) {
+        rowComplete = false;
+        break;
+      }
+    }
+    if (rowComplete) {
+      rowsToClear.push(y);
+    }
+  }
+
+  const colsToClear = [];
+  for (let x = 0; x < GRID_SIZE; x++) {
+    let colComplete = true;
+    for (let y = 0; y < GRID_SIZE; y++) {
+      if (GAME_GRID[y][x] === 0) {
+        colComplete = false;
+        break;
+      }
+    }
+    if (colComplete) {
+      colsToClear.push(x);
+    }
+  }
+
+  for (const row of rowsToClear) {
+    for (let x = 0; x < GRID_SIZE; x++) {
+      GAME_GRID[row][x] = 0;
+    }
+    linesCleared++;
+  }
+
+  for (const col of colsToClear) {
+    for (let y = 0; y < GRID_SIZE; y++) {
+      GAME_GRID[y][col] = 0;
+    }
+    linesCleared++;
+  }
+
+  return linesCleared;
+}
+
+// Function to update score based on cleared lines
+function updateScore(linesCleared) {
+  if (linesCleared > 0) {
+    combo++;
+    // Each line cleared = 100 points, multiplied by combo
+    score += linesCleared * 100 * combo;
+  } else {
+    combo = 0;
+  }
+  updateDisplay();
+}
+
+
+function canPlaceAnyBlock() {
+  for (const block of availableBlocks) {
+    if (!block.active) continue;
+
+    for (let gridY = 0; gridY <= GRID_SIZE - block.shape.length; gridY++) {
+      for (let gridX = 0; gridX <= GRID_SIZE - block.shape[0].length; gridX++) {
+        if (canPlaceBlockAtPosition(block.shape, gridX, gridY)) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
 canvas.addEventListener("mouseup", () => {
   if (!activeBlock) return;
 
   const placement = findBestGridPlacement(activeBlock);
 
   if (placement.canPlace) {
+  
     for (let y = 0; y < activeBlock.shape.length; y++) {
       for (let x = 0; x < activeBlock.shape[y].length; x++) {
         if (activeBlock.shape[y][x]) {
@@ -187,8 +259,22 @@ canvas.addEventListener("mouseup", () => {
       (block, index) => index !== activeBlock.originalIndex,
     );
 
+    // Check and clear completed lines
+    const linesCleared = checkAndClearLines();
+
+    // Update score based on cleared lines
+    updateScore(linesCleared);
+
     if (availableBlocks.length === 0) {
       createTrayBlocks();
+    }
+
+    // Check if game is over (no more placements possible)
+    if (!canPlaceAnyBlock()) {
+      gameOver = true;
+      setTimeout(() => {
+        alert(`Game Over! Final Score: ${score}`);
+      }, 100);
     }
   } else {
     const originalBlock = availableBlocks[activeBlock.originalIndex];
@@ -200,6 +286,11 @@ canvas.addEventListener("mouseup", () => {
 
   activeBlock = null;
 });
+
+function updateDisplay() {
+  scoreElement.value = score;
+  comboElement.value = combo;
+}
 
 function drawTray() {
   for (const block of availableBlocks) {
