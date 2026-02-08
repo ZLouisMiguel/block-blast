@@ -1,5 +1,5 @@
 export const GRID_SIZE = 10;
-export const CELL_SIZE = 40;
+export const CELL_SIZE = 30;
 
 export function getGridOffset(canvas) {
   const gridWidth = GRID_SIZE * CELL_SIZE;
@@ -83,4 +83,32 @@ export function drawGhostBlock(ctx, block, gridX, gridY, canvas, alpha = 0.5) {
     CELL_SIZE,
     alpha,
   );
+}
+
+export function canPlaceBlock(grid, block, gridX, gridY) {
+  for (let y = 0; y < block.length; y++) {
+    for (let x = 0; x < block[y].length; x++) {
+      if (!block[y][x]) continue;
+
+      const targetX = gridX + x;
+      const targetY = gridY + y;
+
+      // Rule 1: bounds check
+      if (
+        targetX < 0 ||
+        targetX >= grid[0].length ||
+        targetY < 0 ||
+        targetY >= grid.length
+      ) {
+        return false;
+      }
+
+      // Rule 2: collision check
+      if (grid[targetY][targetX] !== 0) {
+        return false;
+      }
+    }
+  }
+
+  return true;
 }
