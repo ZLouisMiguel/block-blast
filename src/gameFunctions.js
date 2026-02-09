@@ -1,3 +1,5 @@
+import { getRandomColor } from "./blocks";
+
 export const GRID_SIZE = 10;
 export const CELL_SIZE = 30;
 
@@ -25,7 +27,7 @@ export function drawGrid(ctx, canvas, grid) {
       ctx.strokeRect(px, py, CELL_SIZE, CELL_SIZE);
 
       if (grid[y][x]) {
-        ctx.fillStyle = "#4CAF50";
+        ctx.fillStyle = grid[y][x];
         ctx.fillRect(px, py, CELL_SIZE, CELL_SIZE);
       }
     }
@@ -33,10 +35,18 @@ export function drawGrid(ctx, canvas, grid) {
 }
 
 // Block Drawing Functions
-export function drawBlock(ctx, block, startX, startY, cellSize, alpha = 1) {
+export function drawBlock(
+  ctx,
+  block,
+  startX,
+  startY,
+  cellSize,
+  alpha = 1,
+  color = "#4CAF50",
+) {
   ctx.save();
   ctx.globalAlpha = alpha;
-  ctx.fillStyle = "#4CAF50";
+  ctx.fillStyle = color;
   ctx.strokeStyle = "#1b0101fd";
 
   for (let y = 0; y < block.length; y++) {
@@ -88,7 +98,15 @@ export function drawGhostBlock(ctx, block, gridX, gridY, canvas, alpha = 0.5) {
 export function drawTray(ctx, availableBlocks, TRAY_BLOCK_SIZE) {
   for (const block of availableBlocks) {
     if (block.active) {
-      drawBlock(ctx, block.shape, block.x, block.y, TRAY_BLOCK_SIZE);
+      drawBlock(
+        ctx,
+        block.shape,
+        block.x,
+        block.y,
+        TRAY_BLOCK_SIZE,
+        1,
+        block.color,
+      );
     }
   }
 }
@@ -116,7 +134,7 @@ export function createTrayBlocks({
         i * BLOCK_SPACING -
         blockWidth / 2,
       y: TRAY_Y,
-      color: "#4CAF50",
+      color: getRandomColor(),
       active: true,
       originalIndex: i,
     });
