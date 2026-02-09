@@ -11,8 +11,7 @@ This project was built as a learning-focused clone, with an emphasis on:
 - modular, readable code structure
 
 Check out the live thing here 👉🏽 [demo](https://bblastc.netlify.app/)
----
-
+ 
 ## Gameplay Features
 
 - Grid-based puzzle gameplay
