@@ -79,6 +79,91 @@ canvas {
   cursor: default;
 }
 
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(6px);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  z-index: 100;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal {
+  background: #ffffff;
+  border-radius: 5px;
+  padding: 28px 32px;
+
+  width: min(90vw, 360px);
+
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    0 4px 12px rgba(0, 0, 0, 0.08);
+
+  text-align: center;
+}
+
+.modal-title {
+  margin: 0 0 12px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.modal-score {
+  margin-bottom: 24px;
+  font-size: 1.15rem;
+  color: #4b5563;
+}
+
+.modal-score span {
+  font-weight: 700;
+  color: #111827;
+}
+
+.modal-button {
+  width: 100%;
+  padding: 12px 0;
+
+  border: none;
+  border-radius: 12px;
+
+  background: #111827;
+  color: #ffffff;
+
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.modal-button:hover {
+  background: #1f2937;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+}
+
+.modal-button:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
 @media (max-width: 800px) {
   .game-area {
     flex-direction: column;
