@@ -14,6 +14,7 @@ import {
   createTrayBlocks,
 } from "./gameFunctions.js";
 import { BLOCK_SHAPES } from "./blocks.js";
+import { createGameOverModal, showModal } from "./modal.js";
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
@@ -109,7 +110,8 @@ canvas.addEventListener("mouseup", () => {
     for (let y = 0; y < activeBlock.shape.length; y++) {
       for (let x = 0; x < activeBlock.shape[y].length; x++) {
         if (activeBlock.shape[y][x]) {
-          GAME_GRID[placement.gridY + y][placement.gridX + x] = activeBlock.color;
+          GAME_GRID[placement.gridY + y][placement.gridX + x] =
+            activeBlock.color;
         }
       }
     }
@@ -146,7 +148,7 @@ canvas.addEventListener("mouseup", () => {
     ) {
       gameOver = true;
       setTimeout(() => {
-        alert(`Game Over! Final Score: ${score}`);
+        showModal(score);
       }, 100);
     }
   } else {
@@ -174,6 +176,31 @@ function updateDisplay() {
   scoreElement.value = score;
   comboElement.value = combo;
 }
+
+function resetGame() {
+  GAME_GRID = Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(0));
+
+  score = 0;
+  combo = 0;
+  gameOver = false;
+  availableBlocks.length = 0;
+
+  createTrayBlocks({
+    availableBlocks,
+    canvas,
+    TRAY_Y,
+    TRAY_BLOCK_SIZE,
+    TOTAL_BLOCKS,
+    BLOCK_SPACING,
+    BLOCK_SHAPES,
+  });
+
+  updateDisplay();
+}
+
+createGameOverModal({
+  onRestart: resetGame,
+});
 
 function gameLoop() {
   drawGrid(ctx, canvas, GAME_GRID);
@@ -206,7 +233,7 @@ function gameLoop() {
         placement.gridY,
         canvas,
         0.3,
-        activeBlock.color
+        activeBlock.color,
       );
     }
   }
