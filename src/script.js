@@ -109,7 +109,7 @@ canvas.addEventListener("mouseup", () => {
     for (let y = 0; y < activeBlock.shape.length; y++) {
       for (let x = 0; x < activeBlock.shape[y].length; x++) {
         if (activeBlock.shape[y][x]) {
-          GAME_GRID[placement.gridY + y][placement.gridX + x] = 1;
+          GAME_GRID[placement.gridY + y][placement.gridX + x] = activeBlock.color;
         }
       }
     }
@@ -187,6 +187,7 @@ function gameLoop() {
       activeBlock.y,
       TRAY_BLOCK_SIZE,
       0.7,
+      activeBlock.color,
     );
     const placement = findBestGridPlacement({
       canvas,
@@ -204,6 +205,8 @@ function gameLoop() {
         placement.gridX,
         placement.gridY,
         canvas,
+        0.3,
+        activeBlock.color
       );
     }
   }
