@@ -71,12 +71,12 @@ export function drawBlock(
   ctx.restore();
 }
 
-export function drawGhostBlock(ctx, block, gridX, gridY, canvas, alpha = 0.5) {
+export function drawGhostBlock(ctx, block, gridX, gridY, canvas, alpha = 0.5 , color = "#4CAF50") {
   const offset = getGridOffset(canvas);
 
   ctx.save();
   ctx.globalAlpha = alpha;
-  ctx.fillStyle = "#4CAF50";
+  ctx.fillStyle = color;
   ctx.strokeStyle = "#1b0101fd";
 
   for (let y = 0; y < block.length; y++) {
