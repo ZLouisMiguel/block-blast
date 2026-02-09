@@ -81,3 +81,14 @@ This is a **clone for educational purposes**, not a commercial project.
 
 Feel free to fork, experiment, or build on top of it.
 
+## Screenshots
+
+# Gameplay
+![Gameplay](screenshots/gameplay.png)
+
+# Block Placement Preview
+![Preview](screenshots/preview.png)
+
+# Game Over Modal
+![Game Over](screenshots/game-over.png)
+
